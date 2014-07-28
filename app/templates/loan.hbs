@@ -38,7 +38,7 @@
         {{#each row in rows}}
         <tr>
           <td>{{row.date}}</td>
-          <td>{{row.amountPaid}}</td>
+          <td class="pointer">{{inline-editable value=row.amountPaid}}</td>
           <td>{{row.newBalance}}</td>
         </tr>
         {{/each}}
