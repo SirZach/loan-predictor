@@ -3,22 +3,22 @@
     <div class="form-group">
       <div class="col-sm-2">
         <label for="name">Name</label>
-        <input class="form-control" id="name" type="text"/>
+        {{input value=name class="form-control" id="name"}}
       </div>
       <div class="col-sm-2">
         <label for="balance">Balance</label>
-        <input class="form-control" type="text" id="balance"/>
+        {{input value=balance class="form-control" id="balance"}}
       </div>
       <div class="col-sm-2">
         <label for="interest">Interest Rate</label>
-        <input class="form-control" type="text" id="interest"/>
+        {{input value=interest class="form-control" id="interest"}}
       </div>
       <div class="col-sm-2">
         <label for="monthly">Monthly Payment</label>
-        <input class="form-control" type="text" id="monthly"/>
+        {{input value=monthly class="form-control" id="monthly"}}
       </div>
       <div class="col-sm-2 col-sm-offset-2">
-        <button {{action showTable}} class="btn btn-primary">Calculate</button>
+        <button {{action calculate}} class="btn btn-primary">Calculate</button>
       </div>
     </div>
   </form>
@@ -26,7 +26,7 @@
 
 {{#if canShowTable}}
   <div class="row">
-    <table class="table table-border table-striped table-responsive">
+    <table class="table table-bordered table-striped table-responsive">
       <thead>
         <tr>
           <td>Month</td>
@@ -35,11 +35,13 @@
         </tr>
       </thead>
       <tbody>
+        {{#each row in rows}}
         <tr>
-          <td>April, 2014</td>
-          <td>200</td>
-          <td>0</td>
+          <td>{{row.date}}</td>
+          <td>{{row.amountPaid}}</td>
+          <td>{{row.newBalance}}</td>
         </tr>
+        {{/each}}
       </tbody>
     </table>
   </div>
