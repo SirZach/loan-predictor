@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>LoanPredictor</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{BASE_TAG}}
+
+    <link rel="stylesheet" href="assets/vendor.css">
+    <link rel="stylesheet" href="assets/loan-predictor.css">
+  </head>
+  <body>
+    <script>
+      window.LoanPredictorENV = {{ENV}};
+      window.EmberENV = window.LoanPredictorENV.EmberENV;
+    </script>
+    <script src="assets/vendor.js"></script>
+    <script src="assets/loan-predictor.js"></script>
+    <script>
+      window.LoanPredictor = require('loan-predictor/app')['default'].create(LoanPredictorENV.APP);
+    </script>
+  </body>
+</html>
