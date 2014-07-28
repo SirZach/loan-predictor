@@ -1,0 +1,46 @@
+<div class="row">
+  <form role="form">
+    <div class="form-group">
+      <div class="col-sm-2">
+        <label for="name">Name</label>
+        <input class="form-control" id="name" type="text"/>
+      </div>
+      <div class="col-sm-2">
+        <label for="balance">Balance</label>
+        <input class="form-control" type="text" id="balance"/>
+      </div>
+      <div class="col-sm-2">
+        <label for="interest">Interest Rate</label>
+        <input class="form-control" type="text" id="interest"/>
+      </div>
+      <div class="col-sm-2">
+        <label for="monthly">Monthly Payment</label>
+        <input class="form-control" type="text" id="monthly"/>
+      </div>
+      <div class="col-sm-2 col-sm-offset-2">
+        <button {{action showTable}} class="btn btn-primary">Calculate</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+{{#if canShowTable}}
+  <div class="row">
+    <table class="table table-border table-striped table-responsive">
+      <thead>
+        <tr>
+          <td>Month</td>
+          <td>Amount Paid</td>
+          <td>New Balance</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>April, 2014</td>
+          <td>200</td>
+          <td>0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{{/if}}
