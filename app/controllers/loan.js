@@ -6,6 +6,10 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
+  balance: 1500,
+
+  monthly: 200,
+
   /**
    * @property {Boolean} - can show the table with results or not
    */
