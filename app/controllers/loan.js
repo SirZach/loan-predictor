@@ -15,31 +15,74 @@ export default Ember.Controller.extend({
    */
   canShowTable: false,
 
-  rows: function () {
-    var ret = [],
-        balance = +this.get('balance'),
-        interest = +this.get('interest'),
-        monthly = +this.get('monthly');
-
-    if (monthly && balance) {
-      var monthsToPayOff = Math.ceil(balance / monthly);
-
-      for (var i = 0; i < monthsToPayOff; i++) {
-        ret.push({
-          date: 'dno yet',
-          amountPaid: monthly,
-          newBalance: balance - (monthly * i + monthly)
-        });
-      }
-    }
-
-    return ret;
-  }.property('balance', 'interest', 'monthly'),
+  payments: [],
 
   actions: {
 
+    adjustPayment: function (newPayment, index) {
+      var ret = [],
+          payments = this.get('payments'),
+          balance = +this.get('balance'),
+          interest = +this.get('interest'),
+          monthly = +this.get('monthly');
+
+      if (monthly && balance) {
+        var monthsToPayOff = Math.ceil(balance / monthly);
+
+        for (var i = 0; i < monthsToPayOff; i++) {
+          var amountPaid = i === index ? newPayment : payments[i] ? payments[i].amountPaid : monthly,
+              newBalance;
+
+          amountPaid = parseInt(amountPaid);
+
+          if (i === 0) {
+            newBalance = balance - amountPaid;
+          } else {
+            newBalance = ret[i - 1].newBalance - amountPaid;
+          }
+
+          if (newBalance < 0) {
+            newBalance = 0;
+          }
+
+          ret.push({
+            number: i,
+            date: 'dno yet',
+            amountPaid: amountPaid,
+            newBalance: newBalance
+          });
+
+          if (!newBalance) {
+            i = monthsToPayOff;
+          }
+        }
+      }
+
+      this.set('payments', ret);
+    },
+
     calculate: function () {
       this.set('canShowTable', true);
+
+      var ret = [],
+          balance = +this.get('balance'),
+          interest = +this.get('interest'),
+          monthly = +this.get('monthly');
+
+      if (monthly && balance) {
+        var monthsToPayOff = Math.ceil(balance / monthly);
+
+        for (var i = 0; i < monthsToPayOff; i++) {
+          ret.push({
+            number: i,
+            date: 'dno yet',
+            amountPaid: monthly,
+            newBalance: balance - (monthly * i + monthly)
+          });
+        }
+      }
+
+      this.set('payments', ret);
     }
   }
 });

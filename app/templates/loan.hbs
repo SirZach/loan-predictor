@@ -35,11 +35,13 @@
         </tr>
       </thead>
       <tbody>
-        {{#each row in rows}}
+        {{#each payment in payments}}
         <tr>
-          <td>{{row.date}}</td>
-          <td class="pointer">{{inline-editable value=row.amountPaid}}</td>
-          <td>{{row.newBalance}}</td>
+          <td>{{payment.date}}</td>
+          <td class="pointer">
+            {{inline-editable action="adjustPayment" number=payment.number value=payment.amountPaid}}
+          </td>
+          <td>{{payment.newBalance}}</td>
         </tr>
         {{/each}}
       </tbody>
