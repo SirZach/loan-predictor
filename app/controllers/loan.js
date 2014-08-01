@@ -75,7 +75,7 @@ export default Ember.Controller.extend({
         for (var i = 0; i < monthsToPayOff; i++) {
           ret.push({
             number: i,
-            date: 'dno yet',
+            date: moment().add('M', i).format('MMMM YYYY'),
             amountPaid: monthly,
             newBalance: balance - (monthly * i + monthly)
           });
