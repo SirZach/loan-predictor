@@ -40,7 +40,7 @@ export default Ember.Controller.extend({
    * @property {Boolean} - has an interest rate filled in, can be zero
    */
   missingInterest: function () {
-    var interest = +this.get('interest');
+    var interest = parseInt(this.get('interest'));
 
     return !interest && interest !== 0;
   }.property('interest'),
@@ -71,8 +71,8 @@ export default Ember.Controller.extend({
    * payment and balance
    */
   monthsToPayOff: function () {
-    var balance = +this.get('balance'),
-        monthly = +this.get('monthly');
+    var balance = parseInt(this.get('balance')),
+        monthly = parseInt(this.get('monthly'));
 
     return Math.ceil(balance / monthly);
   }.property('balance', 'monthly'),
@@ -88,9 +88,7 @@ export default Ember.Controller.extend({
     adjustPayment: function (newPayment, index) {
       var ret = [],
           payments = this.get('payments'),
-          balance = +this.get('balance'),
-          interest = +this.get('interest'),
-          monthly = +this.get('monthly'),
+          balance = parseInt(this.get('balance')),
           monthsToPayOff = this.get('monthsToPayOff');
 
       for (var i = 0; i < monthsToPayOff; i++) {
@@ -98,7 +96,7 @@ export default Ember.Controller.extend({
 
         //this iteration in the loop is the payment we want to modify
         if (i === index) {
-          amountPaid = +newPayment;
+          amountPaid = parseInt(newPayment);
         } else {
         //use the previously calculated amountPaid amount since we're not
         //modifying this payment
@@ -142,9 +140,8 @@ export default Ember.Controller.extend({
       this.set('canShowTable', true);
 
       var ret = [],
-          balance = +this.get('balance'),
-          interest = +this.get('interest'),
-          monthly = +this.get('monthly'),
+          balance = parseInt(this.get('balance')),
+          monthly = parseInt(this.get('monthly')),
           monthsToPayOff = this.get('monthsToPayOff');
 
       for (var i = 0; i < monthsToPayOff; i++) {
