@@ -85,34 +85,34 @@ export default Ember.Controller.extend({
           monthly = +this.get('monthly'),
           monthsToPayOff = this.get('monthsToPayOff');
 
-      if (monthly && balance) {
+      for (var i = 0; i < monthsToPayOff; i++) {
+        var amountPaid, newBalance;
 
-        for (var i = 0; i < monthsToPayOff; i++) {
-          var amountPaid = i === index ? newPayment : payments[i] ? payments[i].amountPaid : monthly,
-              newBalance;
+        if (i === index) { //this iteration in the loop is the payment we want to modify
+          amountPaid = +newPayment;
+        } else { //use the previously calculated amountPaid amount since we're not modifying this payment
+          amountPaid = payments[i].amountPaid;
+        }
 
-          amountPaid = parseInt(amountPaid);
+        if (i === 0) { //
+          newBalance = balance - amountPaid;
+        } else {
+          newBalance = ret[i - 1].newBalance - amountPaid;
+        }
 
-          if (i === 0) {
-            newBalance = balance - amountPaid;
-          } else {
-            newBalance = ret[i - 1].newBalance - amountPaid;
-          }
+        if (newBalance < 0) {
+          newBalance = 0;
+        }
 
-          if (newBalance < 0) {
-            newBalance = 0;
-          }
+        ret.push({
+          number: i,
+          date: 'dno yet',
+          amountPaid: amountPaid,
+          newBalance: newBalance
+        });
 
-          ret.push({
-            number: i,
-            date: 'dno yet',
-            amountPaid: amountPaid,
-            newBalance: newBalance
-          });
-
-          if (!newBalance) {
-            i = monthsToPayOff;
-          }
+        if (!newBalance) {
+          i = monthsToPayOff;
         }
       }
 
@@ -128,16 +128,13 @@ export default Ember.Controller.extend({
           monthly = +this.get('monthly'),
           monthsToPayOff = this.get('monthsToPayOff');
 
-      if (monthly && balance) {
-
-        for (var i = 0; i < monthsToPayOff; i++) {
-          ret.push({
-            number: i,
-            date: moment().add(i, 'M').format('MMMM YYYY'),
-            amountPaid: monthly,
-            newBalance: balance - (monthly * i + monthly)
-          });
-        }
+      for (var i = 0; i < monthsToPayOff; i++) {
+        ret.push({
+          number: i,
+          date: moment().add(i, 'M').format('MMMM YYYY'),
+          amountPaid: monthly,
+          newBalance: balance - (monthly * i + monthly)
+        });
       }
 
       this.set('payments', ret);
