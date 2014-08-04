@@ -123,7 +123,7 @@ export default Ember.Controller.extend({
 
         ret.push({
           number: i,
-          date: moment().add(i, 'M').format('MMM YYYY')
+          date: moment().add(i, 'M').format('MMM YYYY'),
           amountPaid: amountPaid,
           newBalance: newBalance
         });
