@@ -46,6 +46,14 @@ export default Ember.Controller.extend({
   }.property('interest'),
 
   /**
+   * @property {Boolean} - returns true if any of the required fields are not
+   * filled in
+   */
+  cannotCalculate: function () {
+    return this.get('missingBalance') || this.get('missingMonthly') || this.get('missingInterest');
+  }.property('missingBalance', 'missingMonthly', 'missingInterest'),
+
+  /**
    * @property {Boolean} - can show the table with results or not
    */
   canShowTable: false,

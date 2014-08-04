@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="col-sm-2 col-sm-offset-2">
-      <button {{action calculate}} class="btn btn-primary">Calculate</button>
+      <button {{bind-attr disabled=cannotCalculate}}{{action calculate}} class="btn btn-primary">Calculate</button>
     </div>
   </form>
 </div>
