@@ -50,7 +50,9 @@ export default Ember.Controller.extend({
    * filled in
    */
   cannotCalculate: function () {
-    return this.get('missingBalance') || this.get('missingMonthly') || this.get('missingInterest');
+    return this.get('missingBalance') ||
+           this.get('missingMonthly') ||
+           this.get('missingInterest');
   }.property('missingBalance', 'missingMonthly', 'missingInterest'),
 
   /**
@@ -77,6 +79,12 @@ export default Ember.Controller.extend({
 
   actions: {
 
+    /**
+     * @action recalculates a new payments array based on the modified payment
+     * amount
+     * @param {Number} - the new payment amount
+     * @param {Number} - the identifier for which element in the array to modify
+     */
     adjustPayment: function (newPayment, index) {
       var ret = [],
           payments = this.get('payments'),
@@ -88,29 +96,40 @@ export default Ember.Controller.extend({
       for (var i = 0; i < monthsToPayOff; i++) {
         var amountPaid, newBalance;
 
-        if (i === index) { //this iteration in the loop is the payment we want to modify
+        //this iteration in the loop is the payment we want to modify
+        if (i === index) {
           amountPaid = +newPayment;
-        } else { //use the previously calculated amountPaid amount since we're not modifying this payment
+        } else {
+        //use the previously calculated amountPaid amount since we're not
+        //modifying this payment
           amountPaid = payments[i].amountPaid;
         }
 
-        if (i === 0) { //
+        //for the first month, it's always the balance minus the amount paid
+        if (i === 0) {
           newBalance = balance - amountPaid;
         } else {
+        //for subsequent months, the new balance for that month is the previous
+        //month's balance minus the amount paid
           newBalance = ret[i - 1].newBalance - amountPaid;
         }
 
+        //we're at the last month, no point in showing negative numbers
+        //TODO: recalculate the amount paid to bring the new balance exactly to
+        //zero
         if (newBalance < 0) {
           newBalance = 0;
         }
 
         ret.push({
           number: i,
-          date: 'dno yet',
+          date: moment().add(i, 'M').format('MMM YYYY')
           amountPaid: amountPaid,
           newBalance: newBalance
         });
 
+        //the amount paid was made greater than original and at least one month
+        //was cut off, shorten the array
         if (!newBalance) {
           i = monthsToPayOff;
         }
