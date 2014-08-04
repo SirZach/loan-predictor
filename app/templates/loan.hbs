@@ -1,25 +1,25 @@
-<div class="row">
+<div class="row mb30">
   <form role="form">
-    <div class="form-group">
-      <div class="col-sm-2">
-        <label for="name">Name</label>
-        {{input value=name class="form-control" id="name"}}
-      </div>
-      <div class="col-sm-2">
+    <div class="col-sm-2">
+      <div {{bind-attr class=":form-group missingBalance:has-error"}}>
         <label for="balance">Balance</label>
         {{input value=balance class="form-control" id="balance"}}
       </div>
-      <div class="col-sm-2">
+    </div>
+    <div class="col-sm-2">
+      <div {{bind-attr class=":form-group missingInterest:has-error"}}>
         <label for="interest">Interest Rate</label>
         {{input value=interest class="form-control" id="interest"}}
       </div>
-      <div class="col-sm-2">
+    </div>
+    <div class="col-sm-2">
+      <div {{bind-attr class=":form-group missingMonthly:has-error"}}>
         <label for="monthly">Monthly Payment</label>
         {{input value=monthly class="form-control" id="monthly"}}
       </div>
-      <div class="col-sm-2 col-sm-offset-2">
-        <button {{action calculate}} class="btn btn-primary">Calculate</button>
-      </div>
+    </div>
+    <div class="col-sm-2 col-sm-offset-2">
+      <button {{action calculate}} class="btn btn-primary">Calculate</button>
     </div>
   </form>
 </div>
