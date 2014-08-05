@@ -148,7 +148,6 @@ export default Ember.Controller.extend({
         }
 
         if (i + 1 === monthsToPayOff && newBalance > 0) {
-          console.log('i is ' + i + ' and monthsToPayOff is ' + monthsToPayOff + ' and balance is ' + newBalance);
           monthsToPayOff++;
         }
       }
