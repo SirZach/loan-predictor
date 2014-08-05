@@ -89,18 +89,31 @@ export default Ember.Controller.extend({
       var ret = [],
           payments = this.get('payments'),
           balance = parseInt(this.get('balance')),
+          monthly = parseInt(this.get('monthly')),
           monthsToPayOff = this.get('monthsToPayOff');
 
       for (var i = 0; i < monthsToPayOff; i++) {
         var amountPaid, newBalance;
+        var currPayment = payments[i],
+            modifiedByAlgorithm = false;
 
         //this iteration in the loop is the payment we want to modify
         if (i === index) {
           amountPaid = parseInt(newPayment);
         } else {
         //use the previously calculated amountPaid amount since we're not
-        //modifying this payment
-          amountPaid = payments[i].amountPaid;
+        //modifying this payment if that payment object exists, it might not
+        //if a modified payment was made to be less than the monthly payment
+          if (currPayment) {
+            if (!currPayment.modifiedByAlgorithm) {
+                amountPaid = currPayment.amountPaid;
+            } else {
+              //ignore the payment amount, it was modified on behalf of the user
+                amountPaid = monthly;
+            }
+          } else {
+            amountPaid = monthly;
+          }
         }
 
         //for the first month, it's always the balance minus the amount paid
@@ -113,23 +126,30 @@ export default Ember.Controller.extend({
         }
 
         //we're at the last month, no point in showing negative numbers
-        //TODO: recalculate the amount paid to bring the new balance exactly to
-        //zero
+        //the last payment should be the payoff amount
         if (newBalance < 0) {
           newBalance = 0;
+          amountPaid = ret[i - 1].newBalance;
+          modifiedByAlgorithm = true;
         }
 
         ret.push({
           number: i,
           date: moment().add(i, 'M').format('MMM YYYY'),
           amountPaid: amountPaid,
-          newBalance: newBalance
+          newBalance: newBalance,
+          modifiedByAlgorithm: modifiedByAlgorithm
         });
 
         //the amount paid was made greater than original and at least one month
         //was cut off, shorten the array
         if (!newBalance) {
           i = monthsToPayOff;
+        }
+
+        if (i + 1 === monthsToPayOff && newBalance > 0) {
+          console.log('i is ' + i + ' and monthsToPayOff is ' + monthsToPayOff + ' and balance is ' + newBalance);
+          monthsToPayOff++;
         }
       }
 
@@ -142,19 +162,25 @@ export default Ember.Controller.extend({
       var ret = [],
           balance = parseInt(this.get('balance')),
           monthly = parseInt(this.get('monthly')),
-          monthsToPayOff = this.get('monthsToPayOff');
+          monthsToPayOff = this.get('monthsToPayOff'),
+          modifiedByAlgorithm = false;
 
       for (var i = 0; i < monthsToPayOff; i++) {
-        var newBalance = balance - (monthly * i + monthly);
+        var newBalance = balance - (monthly * i + monthly),
+            amountPaid = monthly;
+
         if (newBalance < 0) {
           newBalance = 0;
+          amountPaid = ret[i - 1].newBalance;
+          modifiedByAlgorithm = true;
         }
 
         ret.push({
           number: i,
           date: moment().add(i, 'M').format('MMMM YYYY'),
-          amountPaid: monthly,
-          newBalance: newBalance
+          amountPaid: amountPaid,
+          newBalance: newBalance,
+          modifiedByAlgorithm: modifiedByAlgorithm
         });
       }
 
