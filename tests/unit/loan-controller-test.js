@@ -69,21 +69,6 @@ test('cannotCalculate', function () {
   ok(ctrl.get('cannotCalculate'));
 });
 
-test('monthsToPayOff', function () {
-  var ctrl = this.subject();
-
-  ctrl.setProperties({
-    balance: 1500,
-    monthly: 300
-  });
-
-  equal(ctrl.get('monthsToPayOff'), 5);
-
-  ctrl.set('balance', 1600);
-
-  equal(ctrl.get('monthsToPayOff'), 6);
-});
-
 test('calculate', function () {
   var ctrl = this.subject();
 

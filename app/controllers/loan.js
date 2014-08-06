@@ -66,17 +66,6 @@ export default Ember.Controller.extend({
    */
   payments: [],
 
-  /**
-   * @property {Number} - number of months to pay off the loan given a monthly
-   * payment and balance
-   */
-  monthsToPayOff: function () {
-    var balance = parseInt(this.get('balance')),
-        monthly = parseInt(this.get('monthly'));
-
-    return Math.ceil(balance / monthly);
-  }.property('balance', 'monthly'),
-
   actions: {
 
     /**
@@ -90,9 +79,9 @@ export default Ember.Controller.extend({
           payments = this.get('payments'),
           balance = parseInt(this.get('balance')),
           monthly = parseInt(this.get('monthly')),
-          monthsToPayOff = this.get('monthsToPayOff');
+          i = 0;
 
-      for (var i = 0; i < monthsToPayOff; i++) {
+      while (balance > 0) {
         var amountPaid, newBalance;
         var currPayment = payments[i],
             modifiedByAlgorithm = false;
@@ -141,15 +130,9 @@ export default Ember.Controller.extend({
           modifiedByAlgorithm: modifiedByAlgorithm
         });
 
-        //the amount paid was made greater than original and at least one month
-        //was cut off, shorten the array
-        if (!newBalance) {
-          i = monthsToPayOff;
-        }
+        balance = newBalance;
 
-        if (i + 1 === monthsToPayOff && newBalance > 0) {
-          monthsToPayOff++;
-        }
+        i++;
       }
 
       this.set('payments', ret);
@@ -161,11 +144,11 @@ export default Ember.Controller.extend({
       var ret = [],
           balance = parseInt(this.get('balance')),
           monthly = parseInt(this.get('monthly')),
-          monthsToPayOff = this.get('monthsToPayOff'),
-          modifiedByAlgorithm = false;
+          modifiedByAlgorithm = false,
+          i = 0;
 
-      for (var i = 0; i < monthsToPayOff; i++) {
-        var newBalance = balance - (monthly * i + monthly),
+      while (balance > 0) {
+        var newBalance = balance - monthly,
             amountPaid = monthly;
 
         if (newBalance < 0) {
@@ -181,6 +164,9 @@ export default Ember.Controller.extend({
           newBalance: newBalance,
           modifiedByAlgorithm: modifiedByAlgorithm
         });
+
+        balance = newBalance;
+        i++;
       }
 
       this.set('payments', ret);
