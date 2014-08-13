@@ -138,6 +138,14 @@ export default Ember.Controller.extend({
       this.set('payments', ret);
     },
 
+    /* Interest calculation
+      apr - 4.5
+      yearly interest = balance * 0.045
+      monthly interest = yearly interest / 12
+      principal paid = payment - monthly interest
+      interest paid = monthly interest
+    */
+
     calculate: function () {
       this.set('canShowTable', true);
 

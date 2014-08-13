@@ -30,8 +30,11 @@
       <thead>
         <tr>
           <td>Month</td>
-          <td>Amount Paid</td>
-          <td>New Balance</td>
+          <td>Payment</td>
+          <td>Principal Paid</td>
+          <td>Interest Paid</td>
+          <td>Total Interest</td>
+          <td>Balance</td>
         </tr>
       </thead>
       <tbody>
@@ -41,6 +44,9 @@
           <td class="pointer">
             {{inline-editable action="adjustPayment" number=payment.number value=payment.amountPaid}}
           </td>
+          <td>{{payment.principalPaid}}</td>
+          <td>{{payment.interestPaid}}</td>
+          <td>{{payment.interestToDate}}</td>
           <td>{{payment.newBalance}}</td>
         </tr>
         {{/each}}
