@@ -150,14 +150,21 @@ export default Ember.Controller.extend({
       this.set('canShowTable', true);
 
       var ret = [],
-          balance = parseInt(this.get('balance')),
-          monthly = parseInt(this.get('monthly')),
+          balance = parseFloat(this.get('balance')),
+          monthly = parseFloat(this.get('monthly')),
+          interest = parseFloat(this.get('interest')) / 100,
           modifiedByAlgorithm = false,
           i = 0;
 
       while (balance > 0) {
-        var newBalance = balance - monthly,
+        var interestPaid = balance * interest / 12,
+            principalPaid = monthly - interestPaid,
+            newBalance = balance - principalPaid,
             amountPaid = monthly;
+
+        interestPaid = parseFloat(interestPaid.toFixed(2));
+        principalPaid = parseFloat(principalPaid.toFixed(2));
+        newBalance = parseFloat(newBalance.toFixed(2));
 
         if (newBalance < 0) {
           newBalance = 0;
@@ -170,6 +177,8 @@ export default Ember.Controller.extend({
           date: moment().add(i, 'M').format('MMMM YYYY'),
           amountPaid: amountPaid,
           newBalance: newBalance,
+          interestPaid: interestPaid,
+          principalPaid: principalPaid,
           modifiedByAlgorithm: modifiedByAlgorithm
         });
 
