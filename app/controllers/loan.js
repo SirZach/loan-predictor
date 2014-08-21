@@ -5,6 +5,17 @@
 /** jshint globals: moment*/
 import Ember from 'ember';
 
+function evenRound (num, decimalPlaces) {
+  var d = decimalPlaces || 0;
+  var m = Math.pow(10, d);
+  var n = +(d ? num * m : num).toFixed(8); // Avoid rounding errors
+  var i = Math.floor(n), f = n - i;
+  var e = 1e-8; // Allow for rounding errors in f
+  var r = (f > 0.5 - e && f < 0.5 + e) ?
+              ((i % 2 == 0) ? i : i + 1) : Math.round(n);
+  return d ? r / m : r;
+}
+
 export default Ember.Controller.extend({
 
   /**
@@ -157,14 +168,18 @@ export default Ember.Controller.extend({
           i = 0;
 
       while (balance > 0) {
-        var interestPaid = balance * interest / 12,
-            principalPaid = monthly - interestPaid,
+        var interestPaid = balance * interest / 12;
+        interestPaid = evenRound(interestPaid, 2);
+
+        var principalPaid = monthly - interestPaid,
             newBalance = balance - principalPaid,
+            interestToDate,
             amountPaid = monthly;
 
-        interestPaid = parseFloat(interestPaid.toFixed(2));
+
         principalPaid = parseFloat(principalPaid.toFixed(2));
         newBalance = parseFloat(newBalance.toFixed(2));
+        interestToDate = !i ? interestPaid : ret[i - 1].interestToDate + interestPaid;
 
         if (newBalance < 0) {
           newBalance = 0;
@@ -179,6 +194,7 @@ export default Ember.Controller.extend({
           newBalance: newBalance,
           interestPaid: interestPaid,
           principalPaid: principalPaid,
+          interestToDate: interestToDate,
           modifiedByAlgorithm: modifiedByAlgorithm
         });
 

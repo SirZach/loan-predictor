@@ -86,8 +86,8 @@ test('calculate', function () {
 
   equal(payments[0].amountPaid, 200);
   equal(payments[0].principalPaid, 194.38);
-  equal(payments[0].interestPaid, 5.63);
-  equal(payments[0].interestToDate, 5.63);
+  equal(payments[0].interestPaid, 5.62);
+  equal(payments[0].interestToDate, 5.62);
   equal(payments[0].newBalance, 1305.62);
 
   equal(payments[1].amountPaid, 200);
@@ -99,37 +99,37 @@ test('calculate', function () {
   equal(payments[2].amountPaid, 200);
   equal(payments[2].principalPaid, 195.84);
   equal(payments[2].interestPaid, 4.16);
-  equal(payments[2].interestToDate, 14.69);
+  equal(payments[2].interestToDate, 14.68);
   equal(payments[2].newBalance, 914.68);
 
   equal(payments[3].amountPaid, 200);
   equal(payments[3].principalPaid, 196.57);
   equal(payments[3].interestPaid, 3.43);
-  equal(payments[3].interestToDate, 18.12);
+  equal(payments[3].interestToDate, 18.11);
   equal(payments[3].newBalance, 718.11);
 
   equal(payments[4].amountPaid, 200);
   equal(payments[4].principalPaid, 197.31);
   equal(payments[4].interestPaid, 2.69);
-  equal(payments[4].interestToDate, 20.81);
-  equal(payments[4].newBalance, 520.81);
+  equal(payments[4].interestToDate, 20.80);
+  equal(payments[4].newBalance, 520.80);
 
   equal(payments[5].amountPaid, 200);
   equal(payments[5].principalPaid, 198.05);
   equal(payments[5].interestPaid, 1.95);
-  equal(payments[5].interestToDate, 22.76);
-  equal(payments[5].newBalance, 322.76);
+  equal(payments[5].interestToDate, 22.75);
+  equal(payments[5].newBalance, 322.75);
 
   equal(payments[6].amountPaid, 200);
   equal(payments[6].principalPaid, 198.79);
   equal(payments[6].interestPaid, 1.21);
-  equal(payments[6].interestToDate, 23.97);
-  equal(payments[6].newBalance, 123.97);
+  equal(payments[6].interestToDate, 23.96);
+  equal(payments[6].newBalance, 123.96);
 
-  equal(payments[7].amountPaid, 200);
-  equal(payments[7].principalPaid, 123.97);
+  equal(payments[7].amountPaid, 124.42);
+  equal(payments[7].principalPaid, 123.96);
   equal(payments[7].interestPaid, 0.46);
-  equal(payments[7].interestToDate, 24.44);
+  equal(payments[7].interestToDate, 24.42);
   equal(payments[7].newBalance, 0);
 });
 
