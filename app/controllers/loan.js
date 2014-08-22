@@ -4,17 +4,7 @@
 
 /** jshint globals: moment*/
 import Ember from 'ember';
-
-function evenRound (num, decimalPlaces) {
-  var d = decimalPlaces || 0;
-  var m = Math.pow(10, d);
-  var n = +(d ? num * m : num).toFixed(8); // Avoid rounding errors
-  var i = Math.floor(n), f = n - i;
-  var e = 1e-8; // Allow for rounding errors in f
-  var r = (f > 0.5 - e && f < 0.5 + e) ?
-              ((i % 2 == 0) ? i : i + 1) : Math.round(n);
-  return d ? r / m : r;
-}
+import Calculator from '../helpers/calculator';
 
 export default Ember.Controller.extend({
 
@@ -163,22 +153,17 @@ export default Ember.Controller.extend({
       var ret = [],
           balance = parseFloat(this.get('balance')),
           monthly = parseFloat(this.get('monthly')),
-          interest = parseFloat(this.get('interest')) / 100,
+          interest = parseFloat(this.get('interest')),
           modifiedByAlgorithm = false,
           i = 0;
 
       while (balance > 0) {
-        var interestPaid = balance * interest / 12;
-        interestPaid = evenRound(interestPaid, 2);
-
-        var principalPaid = monthly - interestPaid,
-            newBalance = balance - principalPaid,
+        var interestPaid = Calculator.InterestAccrued(balance, interest, 12),
+            principalPaid = Calculator.MonetaryDifference(monthly, interestPaid),
+            newBalance = Calculator.MonetaryDifference(balance, principalPaid),
             interestToDate,
             amountPaid = monthly;
 
-
-        principalPaid = parseFloat(principalPaid.toFixed(2));
-        newBalance = parseFloat(newBalance.toFixed(2));
         interestToDate = !i ? interestPaid : ret[i - 1].interestToDate + interestPaid;
 
         if (newBalance < 0) {
