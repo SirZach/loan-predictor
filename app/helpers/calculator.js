@@ -17,6 +17,9 @@ Calculator.reopenClass({
   },
 
   InterestAccrued: function (balance, interestRate, compoundFrequency) {
+    if (!interestRate) {
+      return 0;
+    }
     var interestAccrued = balance * (interestRate / 100) / compoundFrequency;
     interestAccrued = Calculator.GaussianRounding(interestAccrued, 2);
 
@@ -27,6 +30,24 @@ Calculator.reopenClass({
     var difference = moneyA - moneyB;
 
     return parseFloat(difference.toFixed(2));
+  },
+
+  /**
+   * Formuala
+   * balance * ((interestRate / 12) / (1 - (1 + interestRate / 12) ^ -term))
+   */
+  MinimumPayment: function (balance, interestRate, term) {
+    var monthlyTerms = term * 12,
+        monthlyInterest = interestRate / 100 / 12,
+        min;
+
+    if (!monthlyInterest) {
+      min = balance / monthlyTerms;
+    } else {
+      min = balance * (monthlyInterest / (1 - Math.pow(1 + monthlyInterest, -monthlyTerms)));
+    }
+
+    return min.toFixed(2);
   }
 });
 

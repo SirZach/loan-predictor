@@ -14,37 +14,33 @@ export default Ember.Controller.extend({
   balance: 1500,
 
   /**
-   * @property {Number} - the initial monthly payment to be made on the loan
+   * @property {Number} - the length of the loan in years
    */
-  monthly: 200,
+  term: 3,
 
   /**
    * @property {Number} - the interest rate on the loan
    */
-  interest: 0,
+  interestRate: 0,
 
   /**
    * @property {Boolean} _ has a balance been entered and is greater than zero
    */
-  missingBalance: function () {
-    return !this.get('balance');
-  }.property('balance'),
+  missingBalance: Em.computed.not('balance'),
 
   /**
-   * @property {Boolean} - has a monthly payment and is greater than zero
+   * @property {Boolean} - has a term and is greater than zero
    */
-  missingMonthly: function () {
-    return !this.get('monthly');
-  }.property('monthly'),
+  missingTerm: Em.computed.not('term'),
 
   /**
    * @property {Boolean} - has an interest rate filled in, can be zero
    */
-  missingInterest: function () {
-    var interest = parseInt(this.get('interest'));
+  missingInterestRate: function () {
+    var interestRate = parseInt(this.get('interestRate'));
 
-    return !interest && interest !== 0;
-  }.property('interest'),
+    return !interestRate && interestRate !== 0;
+  }.property('interestRate'),
 
   /**
    * @property {Boolean} - returns true if any of the required fields are not
@@ -52,9 +48,20 @@ export default Ember.Controller.extend({
    */
   cannotCalculate: function () {
     return this.get('missingBalance') ||
-           this.get('missingMonthly') ||
-           this.get('missingInterest');
-  }.property('missingBalance', 'missingMonthly', 'missingInterest'),
+           this.get('missingTerm') ||
+           this.get('missingInterestRate');
+  }.property('missingBalance', 'missingTerm', 'missingInterestRate'),
+
+  /**
+   * @property {Float} - calculates the minimum payment on the loan
+   */
+  minimumPayment: function () {
+    var balance = parseFloat(this.get('balance')),
+        interestRate = parseFloat(this.get('interestRate')),
+        term = this.get('term');
+
+    return Calculator.MinimumPayment(balance, interestRate, term);
+  }.property('balance', 'interestRate', 'term'),
 
   /**
    * @property {Boolean} - can show the table with results or not
@@ -152,17 +159,17 @@ export default Ember.Controller.extend({
 
       var ret = [],
           balance = parseFloat(this.get('balance')),
-          monthly = parseFloat(this.get('monthly')),
-          interest = parseFloat(this.get('interest')),
+          minimumPayment = parseFloat(this.get('minimumPayment')),
+          interestRate = parseFloat(this.get('interestRate')),
           modifiedByAlgorithm = false,
           i = 0;
 
       while (balance > 0) {
-        var interestPaid = Calculator.InterestAccrued(balance, interest, 12),
-            principalPaid = Calculator.MonetaryDifference(monthly, interestPaid),
+        var interestPaid = Calculator.InterestAccrued(balance, interestRate, 12),
+            principalPaid = Calculator.MonetaryDifference(minimumPayment, interestPaid),
             newBalance = Calculator.MonetaryDifference(balance, principalPaid),
             interestToDate,
-            amountPaid = monthly;
+            amountPaid = minimumPayment;
 
         interestToDate = !i ? interestPaid : ret[i - 1].interestToDate + interestPaid;
 

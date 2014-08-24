@@ -15,47 +15,47 @@ test('missingBalance', function () {
   ok(ctrl.get('missingBalance'));
 });
 
-test('missingMonthly', function () {
+test('missingTerm', function () {
   var ctrl = this.subject();
 
-  ok(!ctrl.get('missingMonthly'));
+  ok(!ctrl.get('missingTerm'));
 
-  ctrl.set('monthly', 0);
+  ctrl.set('term', 0);
 
-  ok(ctrl.get('missingMonthly'));
+  ok(ctrl.get('missingTerm'));
 });
 
-test('missingInterest', function () {
+test('missingInterestRate', function () {
   var ctrl = this.subject();
 
-  ok(!ctrl.get('missingInterest'));
+  ok(!ctrl.get('missingInterestRate'));
 
-  ctrl.set('interest', 0);
+  ctrl.set('interestRate', 0);
 
-  ok(!ctrl.get('missingInterest'));
+  ok(!ctrl.get('missingInterestRate'));
 
-  ctrl.set('interest', null);
+  ctrl.set('interestRate', null);
 
-  ok(ctrl.get('missingInterest'));
+  ok(ctrl.get('missingInterestRate'));
 });
 
 test('cannotCalculate', function () {
   var ctrl = this.subject();
 
   ctrl.setProperties({
-    monthly: 1,
+    term: 1,
     balance: 1,
-    interest: 1
+    interestRate: 1
   });
 
   ok(!ctrl.get('cannotCalculate'));
 
-  ctrl.set('monthly', 0);
+  ctrl.set('term', 0);
 
   ok(ctrl.get('cannotCalculate'));
 
   ctrl.setProperties({
-    monthly: 1,
+    term: 1,
     balance: 0
   });
 
@@ -63,10 +63,21 @@ test('cannotCalculate', function () {
 
   ctrl.setProperties({
     balance: 1,
-    interest: null
+    interestRate: null
   });
 
   ok(ctrl.get('cannotCalculate'));
+});
+
+test('minimumPayment', function () {
+  var ctrl = this.subject();
+  ctrl.setProperties({
+    balance: 1500,
+    term: 3,
+    interestRate: 4.5
+  });
+
+  equal(ctrl.get('minimumPayment'), 44.62);
 });
 
 test('calculate', function () {
@@ -74,7 +85,7 @@ test('calculate', function () {
 
   ctrl.setProperties({
     balance: 1500,
-    monthly: 200,
+    term: 3,
     interest: 4.5
   });
 
