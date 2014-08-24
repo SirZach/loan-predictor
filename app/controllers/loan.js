@@ -5,6 +5,7 @@
 /** jshint globals: moment*/
 import Ember from 'ember';
 import Calculator from '../helpers/calculator';
+import Payment from '../models/payment';
 
 export default Ember.Controller.extend({
 
@@ -26,12 +27,12 @@ export default Ember.Controller.extend({
   /**
    * @property {Boolean} _ has a balance been entered and is greater than zero
    */
-  missingBalance: Em.computed.not('balance'),
+  missingBalance: Ember.computed.not('balance'),
 
   /**
    * @property {Boolean} - has a term and is greater than zero
    */
-  missingTerm: Em.computed.not('term'),
+  missingTerm: Ember.computed.not('term'),
 
   /**
    * @property {Boolean} - has an interest rate filled in, can be zero
@@ -73,6 +74,34 @@ export default Ember.Controller.extend({
    * interest rate, and monthly payment
    */
   payments: [],
+
+  _calculatePayment: function (paymentNumber, paymentsArray) {
+    var balance = !paymentNumber ? parseFloat(this.get('balance')) : paymentsArray[paymentNumber - 1].newBalance,
+        minimumPayment = parseFloat(this.get('minimumPayment')),
+        interestRate = parseFloat(this.get('interestRate'));
+
+    var interestPaid = Calculator.InterestAccrued(balance, interestRate, 12),
+        principalPaid = Calculator.MonetaryDifference(minimumPayment, interestPaid),
+        newBalance = Calculator.MonetaryDifference(balance, principalPaid),
+        interestToDate,
+        amountPaid = minimumPayment;
+
+    interestToDate = !paymentNumber ? interestPaid : paymentsArray[paymentNumber - 1].interestToDate + interestPaid;
+    interestToDate = Calculator.Floatize(interestToDate);
+
+    if (newBalance < 0) {
+      newBalance = 0;
+    }
+
+    return Payment.create({
+      number: paymentNumber,
+      amountPaid: amountPaid,
+      newBalance: newBalance,
+      interestPaid: interestPaid,
+      principalPaid: principalPaid,
+      interestToDate: interestToDate
+    });
+  },
 
   actions: {
 
@@ -157,40 +186,15 @@ export default Ember.Controller.extend({
     calculate: function () {
       this.set('canShowTable', true);
 
-      var ret = [],
-          balance = parseFloat(this.get('balance')),
-          minimumPayment = parseFloat(this.get('minimumPayment')),
-          interestRate = parseFloat(this.get('interestRate')),
-          modifiedByAlgorithm = false,
+      var balance = this.get('balance'),
+          payment,
+          ret = [],
           i = 0;
 
       while (balance > 0) {
-        var interestPaid = Calculator.InterestAccrued(balance, interestRate, 12),
-            principalPaid = Calculator.MonetaryDifference(minimumPayment, interestPaid),
-            newBalance = Calculator.MonetaryDifference(balance, principalPaid),
-            interestToDate,
-            amountPaid = minimumPayment;
-
-        interestToDate = !i ? interestPaid : ret[i - 1].interestToDate + interestPaid;
-
-        if (newBalance < 0) {
-          newBalance = 0;
-          amountPaid = ret[i - 1].newBalance;
-          modifiedByAlgorithm = true;
-        }
-
-        ret.push({
-          number: i,
-          date: moment().add(i, 'M').format('MMMM YYYY'),
-          amountPaid: amountPaid,
-          newBalance: newBalance,
-          interestPaid: interestPaid,
-          principalPaid: principalPaid,
-          interestToDate: interestToDate,
-          modifiedByAlgorithm: modifiedByAlgorithm
-        });
-
-        balance = newBalance;
+        payment = this._calculatePayment(i, ret);
+        ret.push(payment);
+        balance = payment.get('newBalance');
         i++;
       }
 

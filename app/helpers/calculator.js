@@ -16,11 +16,11 @@ Calculator.reopenClass({
     return d ? r / m : r;
   },
 
-  InterestAccrued: function (balance, interestRate, compoundFrequency) {
+  InterestAccrued: function (balance, interestRate, paymentsPerYear) {
     if (!interestRate) {
       return 0;
     }
-    var interestAccrued = balance * (interestRate / 100) / compoundFrequency;
+    var interestAccrued = balance * (interestRate / 100) / paymentsPerYear;
     interestAccrued = Calculator.GaussianRounding(interestAccrued, 2);
 
     return interestAccrued;
@@ -29,7 +29,12 @@ Calculator.reopenClass({
   MonetaryDifference: function (moneyA, moneyB) {
     var difference = moneyA - moneyB;
 
-    return parseFloat(difference.toFixed(2));
+    return Calculator.Floatize(difference);
+  },
+
+  Floatize: function (number, decimalPlaces) {
+    decimalPlaces = decimalPlaces || 2;
+    return parseFloat(number.toFixed(decimalPlaces));
   },
 
   /**
@@ -47,7 +52,7 @@ Calculator.reopenClass({
       min = balance * (monthlyInterest / (1 - Math.pow(1 + monthlyInterest, -monthlyTerms)));
     }
 
-    return min.toFixed(2);
+    return Calculator.Floatize(min);
   }
 });
 
